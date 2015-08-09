@@ -10,8 +10,9 @@ public class RootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // TODO: This method is called when the BroadcastReceiver is receiving
-        // an Intent broadcast.
-        throw new UnsupportedOperationException("Not yet implemented");
+
+        Intent it = new Intent(context, HeartFrequenceService.class);
+        context.startService(it);
+                
     }
 }
