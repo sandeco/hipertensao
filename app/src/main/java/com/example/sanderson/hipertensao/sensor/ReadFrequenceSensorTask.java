@@ -1,31 +1,57 @@
 package com.example.sanderson.hipertensao.sensor;
 
-import android.os.AsyncTask;
+import com.example.sanderson.hipertensao.persistence.FrequenceDAO;
 
-import com.example.sanderson.hipertensao.Persistence.FrequenceDAO;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by sanderson on 06/08/2015.
  */
-public class ReadFrequenceSensorTask extends Thread{
+public class ReadFrequenceSensorTask implements Runnable{
 
-    private HeartSensor heartSensor = new HeartSensorMOCK();
-    private String frequencies = "";
+    private Thread thread;
+
+    private HeartSensor heartSensor;
+    private String strFrequencies = "";
     private boolean started = false;
     private int cont = 0;
     private FrequenceDAO dao;
 
+    private List<ReadFrequenceObseverTask> observers = new ArrayList<ReadFrequenceObseverTask>();
+
+
+    public ReadFrequenceSensorTask(){
+        heartSensor = HeartSensor.getInstance();
+        thread = new Thread(this);
+    }
+
+    public void start(){
+        started = true;
+        thread.start();
+    }
+
+    public void stop(){
+        started = false;
+    }
+
+    public void add(ReadFrequenceObseverTask obs){
+        observers.add(obs);
+    }
 
     @Override
     public void run() {
 
+
         while(started) {
             try {
                 if(cont<=20) {
-                    sleep(30 * 1000);
-                    frequencies+= ""+heartSensor.getHeartFrequence()+",";
+                    thread.sleep(30 * 1000);
+
+                    strFrequencies += ""+heartSensor.getHeartFrequence()+",";
+                    cont++;
                 }else{
-                    dao.saveFrequencies(frequencies);
+                    dao.saveFrequencies(strFrequencies);
                     cont=0;
                 }
 
@@ -36,5 +62,10 @@ public class ReadFrequenceSensorTask extends Thread{
     }
 
 
+    public void update(){
+        for(ReadFrequenceObseverTask obs : observers){
+            obs.update();
+        }
+    }
 
 }

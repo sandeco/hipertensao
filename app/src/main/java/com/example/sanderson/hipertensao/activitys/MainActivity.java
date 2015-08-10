@@ -1,9 +1,13 @@
-package com.example.sanderson.hipertensao;
+package com.example.sanderson.hipertensao.activitys;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.widget.TextView;
+
+import com.example.sanderson.hipertensao.R;
+import com.example.sanderson.hipertensao.sensor.HeartFrequenceService;
 
 public class MainActivity extends Activity {
 
@@ -22,8 +26,13 @@ public class MainActivity extends Activity {
         });
 
 
+        /**
+        Intent it = new Intent(this, HeartFrequenceService.class);
+        this.startService(it);
+        **/
 
-
+        Intent i = new Intent(this, DataNascimentoActivity.class);
+        startActivity(i);
 
     }
 }
